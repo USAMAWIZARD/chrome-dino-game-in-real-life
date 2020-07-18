@@ -89,7 +89,7 @@
                     //console.log(lastvalues)
                 }
                 else {
-                    if (results[0]["pose"]["score"] > 0)
+                    if (results[0]["pose"]["score"] > 3)
                         {
                         removeele(sum)
                         isuserjumping()                             //adding and removing element for last value array
@@ -136,6 +136,7 @@
             diff = mxm - mnm                                      //to chek if user jumped
             if (diff >= 800) {
                 jump()
+                lastvalues=[]
             }
         }
     </script>
