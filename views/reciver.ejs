@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Display Webcam Stream</title>
+    <script src="simplepeer.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='/script.js'></script>
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+
+<body>
+    <canvas id='canvas' width="363" height="480"></canvas>
+    <video id="video" width="640" height="480" muted="muted" autoplay></video>
+    <button id="snap">Snap Photo</button>
+
+    <script>
+
+        var lastvalues = []
+        var noovaluestotake = 9
+        video = document.getElementById('video')
+
+
+        const peer = new SimplePeer(
+            {
+                initiator: location.hash === '#init',
+                trickle: false,
+
+            }
+        )
+        peer.on('signal', function (data) {
+
+            socket.emit('makeconn', data)
+
+        })
+        peer.on('stream', function (stream) {
+
+            video.srcObject = stream;
+            video.play();
+
+        })
+        if (location.hash === '#init') { }
+        else {
+        }
+
+        var results
+
+        function removeele(element) {
+            lastvalues.push(element)            //pushing from last and poping from first value of sum of postures
+            lastvalues.shift()
+            console.log("push pop me aaya")
+        }
+
+        const canvas = document.querySelector("canvas");
+        ctx = canvas.getContext("2d");
+        canvas.width = 363
+        canvas.height = 400
+        const poseNet = ml5.poseNet(video, modelLoaded);
+        function modelLoaded() {
+            console.log("Model Loaded!");
+        }
+        // Listen to new 'pose' events
+
+        poseNet.on("pose", function (results) {
+            console.log(results)
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+            if (results.length > 0) {
+
+                var sum = parseInt(results[0]["pose"]["leftEye"]["y"]) +
+                    parseInt(results[0]["pose"]["leftAnkle"]["y"]) +
+                    parseInt(results[0]["pose"]["leftEar"]["y"]) +
+                    parseInt(results[0]["pose"]["leftHip"]["y"]) +
+                    parseInt(results[0]["pose"]["leftKnee"]["y"]) +
+                    parseInt(results[0]["pose"]["leftShoulder"]["y"]) +
+                    parseInt(results[0]["pose"]["nose"]["y"]) +               //sum of all the values of user
+                    parseInt(results[0]["pose"]["rightAnkle"]["y"]) +
+                    parseInt(results[0]["pose"]["rightEar"]["y"]) +
+                    parseInt(results[0]["pose"]["rightEye"]["y"]) +
+                    parseInt(results[0]["pose"]["rightHip"]["y"]) +
+                    parseInt(results[0]["pose"]["rightKnee"]["y"]) +
+                    parseInt(results[0]["pose"]["rightShoulder"]["y"])
+
+                console.log('sum of all pose', sum)
+
+ 
+                if (lastvalues.length <= noovaluestotake) {
+                    lastvalues.push(sum)        //taking a sum of last values in am array of specified length
+                    //console.log(lastvalues)
+                }
+                else {
+                    if (results[0]["pose"]["score"] > 0)
+                        {
+                        removeele(sum)
+                        isuserjumping()                             //adding and removing element for last value array
+                        console.log("last values",lastvalues)
+                    //    isdescending()
+                        }
+                }
+
+
+
+            }
+
+        });
+        function jump() {
+            console.log('user jumpedd')      // if user jump
+        }
+
+
+       
+
+        /*  function isdescending(){
+            var count=0
+            var no=0,yes=0
+            for(i=lastvalues.length-1;i>=0;i--)
+            {
+            for(j=i-1;j>=0;j--){
+            if(lastvalues[i]>lastvalues[j])
+            {
+            count++
+            break
+            }
+            }
+    
+            }
+            console.log("count",count)	
+            if(count<=2)
+            jump()
+    
+            }*/
+        function isuserjumping() {
+            mxm = Math.max.apply(Math,lastvalues)
+            mnm = Math.min.apply(Math,lastvalues)
+            console.log("maximum",mxm,"minimum",mnm)
+            diff = mxm - mnm                                      //to chek if user jumped
+            if (diff >= 800) {
+                jump()
+            }
+        }
+    </script>
+</body>
+
+</html>
