@@ -8,11 +8,12 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src='/script.js'></script>
     <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
 
 <body>
-    <canvas id='gamecanvas' width="900" height="400"></canvas>
-    <canvas id='canvas' width="363" height="480"></canvas>
-    <video id="video" width="640" height="480" muted="muted" autoplay></video>
+    
+    <canvas id='canvas' width="363" height="480" style="display:none"></canvas>
+    <video id="video" width="640" height="480" muted="muted" autoplay style="display: none;"></video>
     <button id="snap">Snap Photo</button>
 
     <script>
@@ -57,27 +58,83 @@
         canvas.width = 363
         canvas.height = 400
 
-        var c = document.getElementById("gamecanvas");
-        var gc = c.getContext("2d");
-    function charecterjump(){
+        var p =new p5()
 
-                    gc.clearRect(0, 0, 300, 300);
+        let run1 = p.loadImage('run1.png');
+        let run2 = p.loadImage('run2.png');
+        let stable = p.loadImage('idle.png');
 
-            gc.rect(100,i  , 150, 100);
-            gc.stroke();  
 
-            console.log('fds')
-            i++
+
+        idel=false
+        onejump=0
+        setTimeout(function(){
+        p.createCanvas(1400,400)
+        },100)
+
+       y=300
+       runing=0
+
+        speed=0.3
+       function draw(){
+
+        p.background(0);
+       
+        image(stable, 50, y);
   
+        if(!idel)
+        {
+
+        if(y>p.height-100)
+            { 
+            if(onejump==4){
+                idel=true
+                onejump=0
+            }
+            onejump++
+            speed=0.8
+            up=true
+            print(onejump)
+            }
+
+        if(y<=p.height-200){
+            speed=0.8
+            up=false
+            print('down')
+        }
+        
+      if(!idel){
+        if(up)
+            {
+            speed=speed+0.2
+            y-=speed
+            }
+        else   {
+        speed=speed+0.2 
+            y+=speed
 
         }
-    
-    for(i=200;i>10;i-=1)
-        {
-    setTimeout(() => {
-        charecterjump()
-    }, 5000);
-}    
+      }
+        }
+        
+        else{
+            if(runing==0){
+                 p.background(0);
+                image(run1, 50, y);
+                print('1')
+                runing=1
+            }
+            else{
+                p.background(0);
+                image(run2, 50, y);
+                runing=0;
+                print('0')
+            }
+     
+        }
+
+       }
+     
         const poseNet = ml5.poseNet(video, modelLoaded);
         function modelLoaded() {
             console.log("Model Loaded!");
@@ -128,6 +185,7 @@
         });
         function jump() {
             console.log('user jumpedd')      // if user jump
+            idel=false
         }
 
 
