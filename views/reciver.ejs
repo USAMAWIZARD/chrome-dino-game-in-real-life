@@ -11,10 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
 
 <body>
-    
-    <canvas id='canvas' width="363" height="480" style="display:none"></canvas>
     <video id="video" width="640" height="480" muted="muted" autoplay style="display: none;"></video>
-    <button id="snap">Snap Photo</button>
 
     <script>
 
@@ -50,91 +47,131 @@
         function removeele(element) {
             lastvalues.push(element)            //pushing from last and poping from first value of sum of postures
             lastvalues.shift()
-            console.log("push pop me aaya")
+
         }
-
-        const canvas = document.getElementById("canvas");
-        ctx = canvas.getContext("2d");
-        canvas.width = 363
-        canvas.height = 400
-
-        var p =new p5()
-
+        var p = new p5()
         let run1 = p.loadImage('run1.png');
         let run2 = p.loadImage('run2.png');
         let stable = p.loadImage('idle.png');
+        let floor = p.loadImage('floor.png');
+        let CACTUS1 = p.loadImage('CACTUS1.png');
+        let CACTUS2 = p.loadImage('CACTUS2.png');
+        let CACTUS3 = p.loadImage('CACTUS3.png');
+        let CACTUS4 = p.loadImage('CACTUS4.png');
+        let CACTUS5 = p.loadImage('CACTUS5.png');
+        randomcactus=[CACTUS1,CACTUS2,CACTUS3,CACTUS4,CACTUS5]
+        
+    
+        console.log(CACTUS5.width)
 
-
-
-        idel=false
-        onejump=0
-        setTimeout(function(){
-        p.createCanvas(1400,400)
-        },100)
-
-       y=300
-       runing=0
-
-        speed=0.3
-       function draw(){
-
-        p.background(0);
+        idel = false
+        onejump = 0
+        by = 300     //bird y
+        bw=67
+        bh=75
+        
+        runing = 0    // for changeing image while runing
+        speed = 0.3     //speed of the charachter
+        floorx = 38         
+        floory = 370
+        fwidth=2500
+        fheight=25   
+        bg=255  //background color
+        randcacx=2000
+        randcacy=300
+        randcac=p.random(randomcactus)
+        randcacspeed=7
+        var randcacw
+        var randcac
        
-        image(stable, 50, y);
-  
-        if(!idel)
-        {
 
-        if(y>p.height-100)
-            { 
-            if(onejump==4){
-                idel=true
-                onejump=0
-            }
-            onejump++
-            speed=0.8
-            up=true
-            print(onejump)
-            }
-
-        if(y<=p.height-200){
-            speed=0.8
-            up=false
-            print('down')
+        setTimeout(function () {
+            p.createCanvas(1400, 400)
+        }, 100)
+        function setup(){
+        randcac=p.random(randomcactus)
+        image(randcac,200,200) 
+        randcacw=randcac.width+40
+        randcach= randcac.height+60
         }
+
+        function draw() {
+
+            if(randcacx<=0){
+                randcacx=2000
+                randcac=p.random(randomcactus)
+                randcacw=randcac.width+30
+                randcach= randcac.height+50
+                console.log(randcac.width)
+            }
         
-      if(!idel){
-        if(up)
-            {
-            speed=speed+0.2
-            y-=speed
+            p.background(bg);
+
+            image(stable, 50, by,bw,bh);
+
+            if (!idel) {
+                image(floor, floorx, floory,fwidth,fheight);
+
+                if (by > p.height - 100) {
+                    if (onejump == 4) {
+                        idel = true
+                        onejump = 0
+                        
+                    }
+                    onejump++
+                    speed = 0.8
+                    up = true
+            
+                }
+
+                if (by <= p.height - 250) {
+                    speed = 0.8
+                    up = false
+             
+                }
+
+                if (!idel) {
+                    if (up) {
+                        speed = speed + 0.2
+                        by -= speed
+                        randcacx=randcacx-randcacspeed
+                        image(randcac,randcacx,randcacy,randcacw,randcach)
+         
+                    }
+                    else {
+                        speed = speed + 0.2
+                        by += speed
+                        randcacx=randcacx-randcacspeed
+                        image(randcac,randcacx,randcacy,randcacw,randcach)
+
+                    }
+                }
             }
-        else   {
-        speed=speed+0.2 
-            y+=speed
+
+            else {
+                if (runing == 0) {
+                
+                    image(run1, 50, by,bw,bh);
+                    runing = 1
+                    image(floor, floorx, floory,fwidth,fheight);
+                    randcacx=randcacx-randcacspeed
+                    image(randcac,randcacx,randcacy,randcacw,randcach)
+                   
+
+                }
+                else {
+                    image(run2, 50, by,bw,bh);
+                    runing = 0;
+                    image(floor, floorx, floory,fwidth,fheight);
+                    randcacx=randcacx-randcacspeed
+                    image(randcac,randcacx,randcacy,randcacw,randcach)
+
+                }
+
+            }
 
         }
-      }
-        }
-        
-        else{
-            if(runing==0){
-                 p.background(0);
-                image(run1, 50, y);
-                print('1')
-                runing=1
-            }
-            else{
-                p.background(0);
-                image(run2, 50, y);
-                runing=0;
-                print('0')
-            }
-     
-        }
 
-       }
-     
         const poseNet = ml5.poseNet(video, modelLoaded);
         function modelLoaded() {
             console.log("Model Loaded!");
@@ -142,9 +179,8 @@
         // Listen to new 'pose' events
 
         poseNet.on("pose", function (results) {
-            console.log(results)
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-
+            randcacx=randcacx-randcacspeed
+            image(randcac,randcacx,randcacy,randcacw,randcach)
             if (results.length > 0) {
 
                 var sum = parseInt(results[0]["pose"]["leftEye"]["y"]) +
@@ -161,21 +197,19 @@
                     parseInt(results[0]["pose"]["rightKnee"]["y"]) +
                     parseInt(results[0]["pose"]["rightShoulder"]["y"])
 
-                console.log('sum of all pose', sum)
 
- 
+
+
                 if (lastvalues.length <= noovaluestotake) {
                     lastvalues.push(sum)        //taking a sum of last values in am array of specified length
-                    //console.log(lastvalues)
+
                 }
                 else {
-                    if (results[0]["pose"]["score"] > 0.3)
-                        {
+                    if (results[0]["pose"]["score"] > 0.3) {
                         removeele(sum)
                         isuserjumping()                             //adding and removing element for last value array
-                        console.log("last values",lastvalues)
-                    //    isdescending()
-                        }
+
+                    }
                 }
 
 
@@ -185,39 +219,18 @@
         });
         function jump() {
             console.log('user jumpedd')      // if user jump
-            idel=false
+            idel = false
         }
-
-
-       
-
-        /*  function isdescending(){
-            var count=0
-            var no=0,yes=0
-            for(i=lastvalues.length-1;i>=0;i--)
-            {
-            for(j=i-1;j>=0;j--){
-            if(lastvalues[i]>lastvalues[j])
-            {
-            count++
-            break
-            }
-            }
-    
-            }
-            console.log("count",count)	
-            if(count<=2)
-            jump()
-    
-            }*/
         function isuserjumping() {
-            mxm = Math.max.apply(Math,lastvalues)
-            mnm = Math.min.apply(Math,lastvalues)
-            console.log("maximum",mxm,"minimum",mnm)
+            randcacx=randcacx-randcacspeed
+            image(randcac,randcacx,randcacy,randcacw,randcach)
+            mxm = Math.max.apply(Math, lastvalues)
+            mnm = Math.min.apply(Math, lastvalues)
+          //  console.log("maximum", mxm, "minimum", mnm)
             diff = mxm - mnm                                      //to chek if user jumped
             if (diff >= 800) {
                 jump()
-                lastvalues=[]
+                lastvalues = []
             }
         }
     </script>
