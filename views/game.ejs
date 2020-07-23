@@ -19,7 +19,7 @@
 
 var peer
     video=document.getElementById('video')
-    navigator.mediaDevices.getUserMedia({ video:  { facingMode: "environment" }}).then(function(stream) {
+    navigator.mediaDevices.getUserMedia({ video:true}).then(function(stream) {
         video.srcObject = stream
   
         peer = new SimplePeer(
