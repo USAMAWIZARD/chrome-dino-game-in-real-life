@@ -18,4 +18,4 @@ socket.on('conn',data=>{
 socket.on('jump',jump=>{
 console.log('adsf')
 idel=false
-})
+});

@@ -6,6 +6,7 @@
     <title>Display Webcam Stream</title>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/simplepeer.min.js"></script> 
     <script src='/script.js'></script>
     <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
@@ -15,9 +16,45 @@
 
     <script>
 
+
+var peer
+    video=document.getElementById('video')
+    navigator.mediaDevices.getUserMedia({ video:  { facingMode: "environment" }}).then(function(stream) {
+        video.srcObject = stream
+  
+        peer = new SimplePeer(
+        {
+            initiator: location.hash === '#init',
+            trickle: false,
+            stream: stream
+        }
+        )
+        
+        peer.on('signal', function (data) {
+        console.log('mera')
+        console.log(data)
+        socket.emit('data',data)
+        })
+        peer.on('stream',function(stream){
+            
+        video.srcObject = stream;
+        video.play();
+        
+        })
+        if(location.hash === '#init')
+        {
+        }
+
+   
+        });
+        
+
+ 
+
+
         var lastvalues = []
         var noovaluestotake = 5
-        video = document.getElementById('video')
+   
 
 
 
@@ -30,15 +67,15 @@
 
         }
         var p = new p5()
-        let run1 = p.loadImage('run1.png');
-        let run2 = p.loadImage('run2.png');
-        let stable = p.loadImage('idle.png');
-        let floor = p.loadImage('floor.png');
-        let CACTUS1 = p.loadImage('CACTUS1.png');
-        let CACTUS2 = p.loadImage('CACTUS2.png');
-        let CACTUS3 = p.loadImage('CACTUS3.png');
-        let CACTUS4 = p.loadImage('CACTUS4.png');
-        let CACTUS5 = p.loadImage('CACTUS5.png');
+        let run1 = p.loadImage('/run1.png');
+        let run2 = p.loadImage('/run2.png');
+        let stable = p.loadImage('/idle.png');
+        let floor = p.loadImage('/floor.png');
+        let CACTUS1 = p.loadImage('/CACTUS1.png');
+        let CACTUS2 = p.loadImage('/CACTUS2.png');
+        let CACTUS3 = p.loadImage('/CACTUS3.png');
+        let CACTUS4 = p.loadImage('/CACTUS4.png');
+        let CACTUS5 = p.loadImage('/CACTUS5.png');
         randomcactus=[CACTUS1,CACTUS2,CACTUS3,CACTUS4,CACTUS5]
         
     
