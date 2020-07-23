@@ -13,4 +13,9 @@ socket.on('send',data=>{
 socket.on('conn',data=>{
     console.log('connection ')
     peer.signal(data)
+});
+
+socket.on('jump',jump=>{
+console.log('adsf')
+idel=false
 })

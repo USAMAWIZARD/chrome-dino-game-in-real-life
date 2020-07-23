@@ -46,8 +46,20 @@ socket.on('data',function(data){
 });
 socket.on('makeconn',function(data){
   socket.broadcast.emit('conn',data)
-})
 });
-server.get('/recive',function(res,res){
+socket.on('userjumped',function(d){
+socket.broadcast.emit('jump',1)
+})
+
+
+
+});
+server.get('/recive',function(req,res){
 res.render('reciver')
+})
+server.get('/onfront',function(req,res){
+  res.render('user')
+})
+server.get('/game',function(req,res){
+  res.render('game')
 })
