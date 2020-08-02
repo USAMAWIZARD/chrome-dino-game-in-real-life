@@ -18,7 +18,7 @@
 
 
 var peer
-    video=document.getElementById('video')
+    video=document.getElementById('video')   // { facingMode: "environment" }
     navigator.mediaDevices.getUserMedia({ video:true}).then(function(stream) {
         video.srcObject = stream
   

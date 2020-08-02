@@ -1,10 +1,8 @@
 
 app=require("express");
-img=require("capture-video-frame")
-var uname
 require("ejs");
 server=app();
-var ser = server.listen(5000)
+var ser = server.listen(5000);
 var io = require('socket.io').listen(ser);
 
 session = require("express-session")({
@@ -27,13 +25,8 @@ server.set("view engine", "ejs");
 server.use(app.static(__dirname));
 const bodyParser= require('body-parser');
 server.use(bodyParser.urlencoded({extended:true}))
-const url = require('url');
-const { render } = require("ejs");
-const { exception } = require("console");
-const { maxHeaderSize } = require("http");
-const { Socket } = require("net");
-server.use(bodyParser.json());
-var socid
+server.use(bodyParser.json());  
+
 //mongodb
 MongoClient = require('mongodb').MongoClient,
 server.get('/', function(req, res) {  res.render('steam');});
