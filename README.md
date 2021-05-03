@@ -14,10 +14,13 @@ still under development to make game better and minimize the latancy.
 
 ## Tech/framework used
 
-##Built with
+**Built with**
 <ul>
   <li>Node JS</li>
   <li>Express JS</li>
+  <li>Web RTC</li>
+  <li>Pose Net</li>
+  <li>Socket IO</li>
 </ul>
 
 ## Features
