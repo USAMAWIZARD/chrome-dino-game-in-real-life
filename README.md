@@ -1,5 +1,5 @@
 # Game In Real Life
-Mobile camara feed is being transmitted to the server computer and is an user comes in front of the camara and jumps the the Dino Game (Chrome Offile Game ) charachter will jump
+Mobile camara feed is being transmitted to the  computer and if  a user comes in front of the camara and jumps the the Dino Game (Chrome Offile Game ) charachter will jump
 
 ## Motivation
 This project helps us to have a higger level of immulsion in the game.
